@@ -38,7 +38,16 @@ public class MyServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		PrintWriter res = response.getWriter();
 		String msg = request.getParameter("msg").toLowerCase();
-		res.print("Looks like you said.."+msg);
+		String resp =process(msg);
+		res.print("Looks like you said.."+msg +" "+resp);
+		
+	}
+	
+	protected String process(String name){
+		if (name.equals("@I"))
+			return " Yay!";
+		else
+			return ". boo.";
 	}
 
 }
