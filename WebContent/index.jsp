@@ -13,6 +13,7 @@
 </head>
 
 <body>
+<div id="main">
 	<div id="chat-area">
 
 	</div>
@@ -22,5 +23,6 @@
 				<input id="chat-submit" type="submit" value="Send"/>
 		</div>
 	</div>
+</div>
 </body>
 </html>

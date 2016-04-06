@@ -1,18 +1,51 @@
+body{
+	background-color:white;
+	width: 500px;
+	margin: auto;
+}
+
+#main{
+	background-color:#000066;
+	border: double;
+}
+
 #chat-area {
-	background-color:#2F4F4F; 
-	height:550px; 
-	width:100%;
-	color: white;
+	background-color:white; 
+	height:400px; 
+	width:90%;
+	margin:auto;
+	margin-top: 30px;
+	padding: 10px;
+	border: double;
+
 }
 #chat-input-area {
-	background-color:#DCDCDC; 
-	height:90px;
-	width:100%;
+	background-color:#f0f0f0; 
+	height:70px;
+	width:90%;
+	margin: auto;
+	margin-bottom:20px;
+	padding: 10px;
+	border: double;
+
+
 }
 #chat-input-inner {
-	padding:20px 0px 20px 20px;
+	padding:2px 0px 2px 2px;
 }
 #chat-input {
-	width:90%;
+	width:85%;
 	height:50px;
+}
+
+#chat-submit {
+	background-color: #b8b8b8;
+	float:right;
+	padding: 5px 5px 5px 5px;
+	font-size:16px;
+	width:13%;
+	border:none;
+	border-radius:5%;
+	font-family:helvetica, sans-serif;
+
 }
