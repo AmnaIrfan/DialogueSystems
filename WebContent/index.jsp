@@ -14,15 +14,16 @@
 
 <body>
 <div id="main">
+	<div id="top"></div>
 	<div id="chat-area">
 
 	</div>
-	<div id="chat-input-area">
-		<div id="chat-input-inner">
-				<textArea id="chat-input" name="firstname" ></textArea>
-				<input id="chat-submit" type="submit" value="Send"/>
-		</div>
-	</div>
+
+	<form name ="chat-input-inner" action="">
+			<textArea id="chat-input" name="msg"></textArea>
+			<button id="chat-submit" class="submitbutton"type="button" onclick="function()" onkeyup="function()">Send</button>
+	</form>
+
 </div>
 </body>
 </html>
