@@ -2,6 +2,8 @@ package dialogueServlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Random;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,8 +41,11 @@ public class MyServlet extends HttpServlet {
 		PrintWriter res = response.getWriter();
 		String msg = request.getParameter("msg").toLowerCase();
 		String resp =process(msg);
-		res.print("Looks like you said.."+msg +" "+resp);
-		
+		int end = (new Random()).nextInt(3);
+		if (end>1)
+			res.print("Looks like you said.."+msg +" "+resp+": "+end);
+		else
+			res.print("@END");
 	}
 	
 	protected String process(String name){
