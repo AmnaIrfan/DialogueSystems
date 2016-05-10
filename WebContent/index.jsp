@@ -18,7 +18,7 @@
 
 <!--
 		-------------------------------------------------------------------------------------------------------------
-		BEGINNING OF WELCOME SCREEN
+		LOGIN SCREEN
 		-------------------------------------------------------------------------------------------------------------
 -->	
 	<div id="userLogin" title="User Login">
@@ -148,23 +148,23 @@
 				<h4>I feel the need to exercise more often.</h4>
 				
 					<form id="pretest1">
-						<input type="radio" name="taichi1" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi1" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi1" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi1" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi1" value="5">5					
+						<input type="radio" name="taichi1" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi1" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi1" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi1" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi1" value="5"/>5					
 					</form>
 				
 				
-				<h4>I am interested in learning Tai Chi.
+				<h4>I am interested in learning Tai Chi.</h4>
 					<form id="pretest2">
-						<input type="radio" name="taichi2" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi2" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi2" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi2" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="radio" name="taichi2" value="5">5					
+						<input type="radio" name="taichi2" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi2" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi2" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi2" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="radio" name="taichi2" value="5"/>5					
 					</form>
-				</h4>		
+						
 			</div>
 			<div class = "buttonHolder">
 				<input class = "submitbutton" id = "QuestSubmit" type = "button" value = "Begin Chat">
@@ -205,9 +205,9 @@
 				
 				<br><br>
 				<div class = "buttonHolder">	
-					<input class="submitbutton" id="printing"  type="button" value="Print Flyer" >
+					<input class="submitbutton" id="printing"  type="button" value="Print Flyer"/>
 					<br><br>
-					<input class="submitbutton" id="nothank"  type="button" value="No Thanks" >
+					<input class="submitbutton" id="nothank"  type="button" value="No Thanks"/>
 				</div>
 			</div>				
 		</div>
@@ -217,58 +217,58 @@
 		BEGINNING OF POST QUESTIONS SCREEN
 		-------------------------------------------------------------------------------------------------------------
 -->		
-		<div class="wrapper" id="PostQuest3">
+		<div class="wrapper" id="PostQuest2">
 			<div class="top">
 				<div style="clear:both"></div>
 			</div>	
-			<div class="container" id="questbox">
+			<div class="container" id="questbox2">
 				<h4>Please state whether you agree or disagree with the following statements.</h4>
 				<span id="errorMessage2"></span>
 				<h5>Strongly Disagree=1 and Strongly Agree=5.</h5>				
 				<h4>The chat program understood what I was saying.
 					<form id="posttest1">
-							<input type="radio" name="Q1" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q1" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q1" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q1" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q1" value="5">5
+							<input type="radio" name="Q1" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q1" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q1" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q1" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q1" value="5"/>5
 					</form>		
 				</h4>
 				<h4>I understood what the chat program was saying to me.
 					<form id="posttest2">
-							<input type="radio" name="Q2" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q2" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q2" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q2" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q2" value="5">5				
+							<input type="radio" name="Q2" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q2" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q2" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q2" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q2" value="5"/>5				
 					</form>
 				</h4>
 				<h4>After this chat,</h4>
 				<h4>I feel the need to exercise more often.
 					<form id="posttest3">							
-							<input type="radio" name="Q3" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q3" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q3" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q3" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q3" value="5">5					
+							<input type="radio" name="Q3" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q3" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q3" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q3" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q3" value="5"/>5					
 					</form>
 				</h4>
 				<h4>I am interested in learning Tai chi.
 					<form id="posttest4">
-							<input type="radio" name="Q4" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q4" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q4" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q4" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q4" value="5">5					
+							<input type="radio" name="Q4" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q4" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q4" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q4" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q4" value="5"/>5					
 					</form>
 				</h4>
 				<h4>This chat persuaded me to find out more about Tai Chi.
 					<form id="posttest5">
-							<input type="radio" name="Q5" value="1">1&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q5" value="2">2&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q5" value="3">3&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q5" value="4">4&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="radio" name="Q5" value="5">5				
+							<input type="radio" name="Q5" value="1"/>1&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q5" value="2"/>2&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q5" value="3"/>3&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q5" value="4"/>4&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" name="Q5" value="5"/>5				
 					</form>
 				</h4>
 			</div>
