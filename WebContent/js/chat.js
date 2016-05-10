@@ -206,7 +206,7 @@ $(document).ready(function(){
 	
 	$("#printing").click(function(){
 		var printYesNo = 1;			
-		$('body').append('<iframe src="../fleaFlyer.pdf" id="printIFrame" name="printIFrame"></iframe>');
+		$('body').append('<iframe src="fleaFlyer.pdf" id="printIFrame" name="printIFrame"></iframe>');
 		$('#printIFrame').bind('load', 
 			function() { 
 				window.frames['printIFrame'].focus(); 
