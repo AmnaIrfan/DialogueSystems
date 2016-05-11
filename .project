@@ -3,6 +3,7 @@
 	<name>DialogueSystem</name>
 	<comment></comment>
 	<projects>
+		<project>DialogueAgent</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
