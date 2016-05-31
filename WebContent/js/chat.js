@@ -30,7 +30,9 @@ $(document).ready(function(){
 					$( this ).dialog( "close" ); 
 					$("#welcome").hide();
 					$("#QuestFormat").hide();
-					$("#main").show(); 	
+					$("#main").show(0, function(){
+							first_msg();
+					}); 
 					$("#PostQuest").hide();
 					$("#PostQuest2").hide();
 					$("#commentsFormatUser").hide(); 
@@ -41,7 +43,19 @@ $(document).ready(function(){
 		}
 	});		
 
-
+	var first_msg = function() {
+		var time = new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
+		var msg = "first@I";
+		$.ajax({
+			url: "MyServlet", 
+			type:"POST",
+			data:{msg:msg},
+			success: function(reply){
+				addToChat(time, "Health Guru", "Hi this is the Health Guru! How are you?");						
+		}});
+	}; 
+	
+	
 	/* 
 	  *----------------------------------------------------------------------------------------------------------------------------
 	  *Animation for the "Continue" button on the User's welcome screen
@@ -110,7 +124,9 @@ $(document).ready(function(){
 											
 			$("#welcome").hide();
 			$("#QuestFormat").hide();
-			$("#main").show();					
+			$("#main").show(0, function(){
+				first_msg();
+		}); 				
 			$("#PostQuest").hide();
 			$("#PostQuest3").hide();
 			$("#commentsFormatUser").hide();
