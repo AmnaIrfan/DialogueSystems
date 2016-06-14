@@ -44,15 +44,30 @@ $(document).ready(function(){
 	});		
 
 	var first_msg = function() {
-		var time = new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
-		var msg = "first@I";
+		var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
+		
 		$.ajax({
 			url: "MyServlet", 
 			type:"POST",
-			data:{msg:msg},
+			data:{
+				msg:null,
+				pos: $("#Position").val(),
+				sex: $("#Gender").val(),
+				race: $("#Ethnicity").val(),
+				age: $("#Age").val(),
+				ex1: $("#Exercise1").val(),
+				ex2: $("#Exercise2").val(),
+				soc:  $("#SocialNetwork").val(),		
+				pre1: $('input:radio[name=taichi1]:checked').val(),
+				pre2: $('input:radio[name=taichi2]:checked').val()
+				},
 			success: function(reply){
-				addToChat(time, "Health Guru", "Hi this is the Health Guru! How are you?");						
-		}});
+				if (reply=="@END")
+					postchat();
+				else
+					addToChat(time, "Health Guru", reply);
+			}});		
+							
 	}; 
 	
 	
@@ -260,6 +275,7 @@ $(document).ready(function(){
 				$('#questbox2').scrollTop(0);
 		}
 		else {
+			alert("hi");
 			var q1 = $("#posttest1").val();
 			var q2 = $("#posttest2").val();
 			var q3 = $("#posttest3").val();

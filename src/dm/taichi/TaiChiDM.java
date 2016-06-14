@@ -13,7 +13,7 @@ public class TaiChiDM extends Agent{
 	@Override
 	public void initSystem() {
 		// Create new loader
-		String basePath="/Users/cherieformacion/git/DialogueSystem/code/DialogueAgent/data/";
+		String basePath="/Users/amnairfan/DialogueSystem/code/DialogueAgent/data/";
 		TaiChiAgentLoader loader = new TaiChiAgentLoader("");
 		loader.MDP_FILENAME=basePath+"taichi-agent/sequence_data_mdp.txt";
 		loader.EMOTION_TRAINING_FILENAME=basePath+"testDocs/";
