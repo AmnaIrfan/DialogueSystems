@@ -23,15 +23,12 @@ import java.sql.*;
  */
 @WebServlet("/MyServlet")
 public class MyServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-    
-	private TaiChiDM taichi;
+	private static final long serialVersionUID = 1L;	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public MyServlet() {
         super();
-        taichi = new TaiChiDM();
         // TODO Auto-generated constructor stub
     }
 
@@ -57,6 +54,22 @@ public class MyServlet extends HttpServlet {
 	}
 	
 	protected String process(String id, HttpServletRequest req){
+		
+		HttpSession session = req.getSession();
+		
+		System.out.println("###########");
+		System.out.println(session.getId());
+		TaiChiDM taichi = (TaiChiDM)session.getAttribute("taichi");
+		if (taichi == null) {
+			System.out.println("is null");
+			taichi = new TaiChiDM();
+			session.setAttribute("taichi", taichi);
+		} else {
+			System.out.println("is not null");
+		}
+	    
+
+	
 		DM dialogue = taichi.getDialogueManager();
 		String userText = req.getParameter("msg");
 		String questionId = "";
