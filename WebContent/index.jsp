@@ -1,5 +1,14 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*" %>
+<%
+ResultSet resultset =null; 
+String connStr = "jdbc:sqlite:/Users/amnairfan/Documents/eclipse_workspace/DialogueSystems/dialogueSystem.db";
+Connection connection = null;
+Statement statement = null;
+Class.forName("org.sqlite.JDBC");
+%>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -67,78 +76,108 @@
 		<div class="wrapper" id="QuestFormat">
 			<div class="top">
 			</div>	
+			
+			
 			<div class="container" id="questbox">			
 				<h4>Please take a moment to answer a few quick questions. Thank you.</h4>
 				<span id="errorMessage1"></span>
+				
+				<!-- POSITION -->
 				<h4>What is your role?
+					<% 
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset = statement.executeQuery("select * from Position");%>
 					<select  id = "Position">
-						<option value = "">-Select-</option>
-						<option value = "UndergraduateStudent">Undergraduate Student</option>
-						<option value = "graduateStudent">Graduate Student</option>
-						<option value = "Faculty">Faculty</option>
-						<option value = "Staff">Staff</option>
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
-				
-				<h4>What is your gender?
+			
+				<!-- GENDER -->
+				<h4> What is your gender?
+					<% 
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset = statement.executeQuery("select * from Gender");%>
 					<select id= "Gender">
-						<option value="">-Select-</option>
-						<option value= "Male">Male</option>
-						<option value= "Female">Female</option>
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
-				
+						
+				<!-- ETHNICITY -->
 				<h4>What is your ethnicity?
-					<select id = "Ethnicity">
-						<option value="">-Select-</option>
-						<option value = "Caucasian">Caucasian</option>
-						<option value = "Hispanic/Latino">Hispanic / Latino</option>
-						<option value = "MiddleEastern">Middle Eastern</option>
-						<option value = "AsianPacificIslander">Asian/Pacific Islander</option>
-						<option value = "Black/AfricanAmerican">Black/African American</option>
-						<option value = "Other">Other</option>
+					<% 
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset =statement.executeQuery("select * from Ethnicity");%>
+					<select id="Ethnicity">
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
-				
+			
+				<!-- AGE -->
 				<h4>What is your age range?
+					<%
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset =statement.executeQuery("select * from Age");%>
 					<select id = "Age">
-						<option value="">-Select-</option>
-						<option value = "EighteenToTwentyOne">18 -21</option>
-						<option value = "TwentyTwoToTwentyFive">22 - 25</option>
-						<option value = "TwentySixToThirty">26 - 30</option>
-						<option value = "ThirtyOneToForty">31 - 40</option>
-						<option value = "FortyOneToFifty">41 - 50</option>
-						<option value = "FiftyOneToSixty">51 - 60</option>
-						<option value = "SixtyOneAndOlder">61 and Older</option>
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
 				
+				<!-- EXCERCISE FREQUENCY -->
 				<h4>How often do you exercise per week?
+					<%
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset =statement.executeQuery("select * from ExcerFreq");%>
 					<select id = "Exercise1">
-						<option value="">-Select-</option>
-						<option value = "0-1times">0-1 times</option>
-						<option value = "2-3times">2-3 times</option>
-						<option value = "4+">4+ times</option>
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
-			
+				
+				<!-- EXCERCISE TYPE -->
 				<h4>Which type of exercises?
+					<% 
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset =statement.executeQuery("select * from ExcerType");%>
 					<select id = "Exercise2">
-						<option value="">-Select-</option>
-						<option value = "Aerobicexercise">Aerobic exercise(walking, running, cycling)</option>
-						<option value = "Anaerobicexercise">Anaerobic exercise(weight lifting)</option>
-						<option value = "Flexibility">Flexibility(yoga)</option>
-						<option value = "None">None</option>
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
 					</select>
 				</h4>
-			
+				
+				<!-- SOCIAL NETWORK -->
 				<h4>What social network sites do you use?
+					<%
+					connection = DriverManager.getConnection (connStr); 
+					statement = connection.createStatement() ;
+					resultset =statement.executeQuery("select * from SocialNetworks");%>
 					<select id = "SocialNetwork">
-						<option value="">-Select-</option>
-						<option value = "Facebook" >Facebook</option>
-						<option value = "Twitter">Twitter</option>
-						<option value = "Both">Both</option>
-					</select>			
+						<option value ="">Select</option>
+			        <%  while(resultset.next()){ %>
+			            <option value = <%= resultset.getString(1)%> ><%= resultset.getString(2)%></option>
+			        <% } %>
+					</select>
 				</h4>
 				
 				<h4>Please state whether you agree or disagree with the following statements.</h4>
@@ -166,6 +205,7 @@
 					</form>
 						
 			</div>
+			
 			<div class = "buttonHolder">
 				<input class = "submitbutton" id = "QuestSubmit" type = "button" value = "Begin Chat">
 			</div>

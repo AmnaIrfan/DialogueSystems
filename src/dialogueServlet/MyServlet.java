@@ -1,8 +1,11 @@
 package dialogueServlet;
+
+import java.util.Scanner;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.io.IOException;
 import java.util.Date;
 import java.io.PrintWriter;
-
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,33 +19,39 @@ import dm.nlp.Message;
 import dm.taichi.TaiChiDM;
 
 import queries.DialogueDb;
-import java.sql.*;
 
 /**
  * Servlet implementation class MyServlet
  */
 @WebServlet("/MyServlet")
 public class MyServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public MyServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private static final long serialVersionUID = 1L;
+	private int temp;
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public MyServlet() {
+		super();
+		temp = 0;
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
- 	
+
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		PrintWriter res = response.getWriter();
 		HttpSession session = request.getSession();
@@ -52,82 +61,75 @@ public class MyServlet extends HttpServlet {
 		res.flush();
 		res.close();
 	}
-	
-	protected String process(String id, HttpServletRequest req){
-		
+
+	protected String process(String id, HttpServletRequest req) {
+
 		HttpSession session = req.getSession();
 		
-		System.out.println("###########");
-		System.out.println(session.getId());
-		TaiChiDM taichi = (TaiChiDM)session.getAttribute("taichi");
+		String userText = req.getParameter("msg");
+		
+		TaiChiDM taichi = (TaiChiDM) session.getAttribute("taichi");
 		if (taichi == null) {
-			System.out.println("is null");
+			System.out.println("***NEW SESSION :" + session.getId()+ " ***");	
 			taichi = new TaiChiDM();
 			session.setAttribute("taichi", taichi);
 		} else {
-			System.out.println("is not null");
+			System.out.println("Enter emotion for '" + userText +  "':");
+			Scanner kbd = new Scanner(System.in);
+			String emotion = kbd.nextLine();
+			userText = userText + "@" + emotion;
 		}
-	    
 
-	
 		DM dialogue = taichi.getDialogueManager();
-		String userText = req.getParameter("msg");
+		//String userText = req.getParameter("msg");
 		String questionId = "";
 		String question = "";
 		String emotion = "";
 		String time = new Date().toString();
-		
+
 		String query = "INSERT INTO Dialogue values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
 		DialogueDb db = new DialogueDb("dialogueSystem");
-		//first time text is null
-		System.out.println("user tst");
-		System.out.println(userText);
-		if(userText == "") {
+		// first time text is null
+		if (userText == "") {
 			question = dialogue.takeTurn(null);
 			questionId = "INTRO";
 			this.postDemo(id, req);
 			db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question));
 		}
-		//second time
-		else if (!dialogue.isOver()){
+		// second time
+		else if (!dialogue.isOver()) {
 			Message msg = new Message(userText);
 			question = dialogue.takeTurn(msg);
-			//question = "Many tai chi exercises help build muscle mass. You can do it from the comfort of your own home at a time that's convenient for you. Would you like me to tell you more about it?";
-			System.out.println("ques");
-			System.out.println(question);
-			//question = question.replaceAll("’", "\'");
-			System.out.println(question);
+			question = question.replaceAll("HG: ","");
 			Message response = dialogue.getResponse();
 			questionId = response.getProperty("next_question");
 			emotion = userText.split("@")[1];
 			userText = userText.split("@")[0];
-		    if (response.getProperty("next_question").equals("CONCLPRINT")) {
-		    	question="@END";
-		    }
-		    
-			db.executeQuery(String.format(query, id, time, "U", questionId, emotion, userText));
-			db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question));
+			if (response.getProperty("next_question").equals("CONCLPRINT")) {
+				question = "@END";
+			}
+			//clean question and answer before saving to database
+			db.executeQuery(String.format(query, id, time, "U", questionId, emotion, userText.replaceAll("[^A-Za-z0-9 .?!,]","")));
+			db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question.replaceAll("[^A-Za-z0-9 .?!,]","")));
 		}
-		
-		System.out.println("query");
-		System.out.println(query);		
+
 		return question;
 	}
-	
-	protected void postDemo(String id, HttpServletRequest req){
+
+	protected void postDemo(String id, HttpServletRequest req) {
 		DialogueDb db = new DialogueDb("dialogueSystem");
 		String pos = req.getParameter("pos");
 		String sex = req.getParameter("sex");
-		String race =req.getParameter("race");
+		String race = req.getParameter("race");
 		String age = req.getParameter("age");
 		String ex1 = req.getParameter("ex1");
 		String ex2 = req.getParameter("ex2");
-		String soc = req.getParameter("soc");	
+		String soc = req.getParameter("soc");
 		String pre1 = req.getParameter("pre1");
 		String pre2 = req.getParameter("pre2");
 		String query = "INSERT INTO Demographics values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
-		db.executeQuery(String.format(query, id,pos, sex, race, age, ex1, ex2, soc, pre1, pre2));
-	
+		db.executeQuery(String.format(query, id, pos, sex, race, age, ex1, ex2, soc, pre1, pre2));
+
 	}
 
 }

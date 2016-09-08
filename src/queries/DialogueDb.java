@@ -12,7 +12,6 @@ public class DialogueDb {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("np");
 			e1.printStackTrace();
 		}
 	      Connection connection = null;
@@ -44,7 +43,6 @@ public class DialogueDb {
      {	
 		//creating table
 		 DialogueDb db = new DialogueDb("dialogueSystem");
-		 //db.executeQuery("INSERT INTO Dialogue values('B6965B478DB2EA118DDF2C74D0C707DA', '90', 'HG', 'INTRO', '', 'Hi, I am the health guru. How are you?')");
 		
      }
 }
