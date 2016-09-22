@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+	var printYesNo = 0;
 	/* 
 	  *----------------------------------------------------------------------------------------------------------------------------
 	  *The login screen is the initial visible interface.  The rest of the screens are hidden.
@@ -45,12 +45,13 @@ $(document).ready(function(){
 
 	var first_msg = function() {
 		var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
-		
+		console.log("fits");
 		$.ajax({
 			url: "MyServlet", 
 			type:"POST",
 			data:{
 				msg:null,
+				reqtype:"demo",
 				pos: $("#Position").val(),
 				sex: $("#Gender").val(),
 				race: $("#Ethnicity").val(),
@@ -62,8 +63,10 @@ $(document).ready(function(){
 				pre2: $('input:radio[name=taichi2]:checked').val()
 				},
 			success: function(reply){
-				if (reply=="@END")
+				if (reply=="@END") {
 					postchat();
+				}
+					
 				else
 					addToChat(time, "Health Guru", reply);
 			}});		
@@ -166,7 +169,7 @@ $(document).ready(function(){
 				$.ajax({
 					url: "MyServlet", 
 					type:"POST",
-					data:{msg:msg},
+					data:{reqtype:"chat",msg:msg},
 					success: function(reply){
 						if (reply=="@END")
 							postchat();
@@ -236,7 +239,7 @@ $(document).ready(function(){
 	*/
 	
 	$("#printing").click(function(){
-		var printYesNo = 1;			
+		printYesNo = 1;			
 		$('body').append('<iframe src="fleaFlyer.pdf" id="printIFrame" name="printIFrame"></iframe>');
 		$('#printIFrame').bind('load', 
 			function() { 
@@ -249,11 +252,10 @@ $(document).ready(function(){
 		$("#ChatFormat").hide();
 		$("#PostQuest").hide();		
 		$("#PostQuest2").show();
-		$("#commentsFormatUser").hide();							
+		$("#commentsFormatUser").hide();
 	});
 		
 	$("#nothank").click(function(){
-		var printYesNo = 0;
 		$("#welcome").hide();
 		$("#QuestFormat").hide();
 		$("#ChatFormat").hide();
@@ -275,18 +277,28 @@ $(document).ready(function(){
 				$('#questbox2').scrollTop(0);
 		}
 		else {
-			alert("hi");
-			var q1 = $("#posttest1").val();
-			var q2 = $("#posttest2").val();
-			var q3 = $("#posttest3").val();
-			var q4 = $("#posttest4").val();
-			var q5 = $("#posttest5").val();
+						
 			$("#welcome").hide();
 			$("#QuestFormat").hide();
 			$("#ChatFormat").hide();
 			$("#PostQuest").hide();
 			$("#PostQuest2").hide();
 			$("#commentsFormatUser").show();
+			$.ajax({
+				url: "MyServlet", 
+				type:"POST",
+				data:{
+					reqtype:"postques",
+					guruUnder: $('input:radio[name=Q1]:checked').val(),
+					userUnder: $('input:radio[name=Q2]:checked').val(),
+					excerNeed: $('input:radio[name=Q3]:checked').val(),
+					taichiInterest: $('input:radio[name=Q4]:checked').val(),
+					taichiPers: $('input:radio[name=Q5]:checked').val(),
+					printed: printYesNo 
+					},
+				success: function(done){
+					alert(done);
+				}});	
 		}});	
 
 	/* 
@@ -296,9 +308,23 @@ $(document).ready(function(){
 	  */
 	
 	$("#submitcmmtsUser").click(function(){
+		var comments = $('#addCmmtsUser').val();
+		console.log("comment"+comments)
+		if (comments != "") {
+			$.ajax({
+				url: "MyServlet", 
+				type:"POST",
+				data:{
+					reqtype:"comments",
+					comment: comments,
+					},
+				success: function(done){
+					alert(done);
+				}});
+		}
+		
 		$("#commentsFormatUser").hide();
 		alert("Thank you and goodbye!");
-		
 	});
 	
 	
