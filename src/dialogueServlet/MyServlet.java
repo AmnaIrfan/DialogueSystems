@@ -82,7 +82,7 @@ public class MyServlet extends HttpServlet {
 			session.setAttribute("taichi", taichi);
 		} else {
 			userText = userText.replaceAll("'","’").replaceAll("[^A-Za-z0-9 .?!,’]","");
-			String [] emoptions = {"NI","I"};
+			String [] emoptions = {"NI","I", "SI"};
 			Scanner kbd = new Scanner(System.in);
 			String emotion;
 			String guru = session.getAttribute("prevQuestion").toString();
@@ -127,7 +127,7 @@ public class MyServlet extends HttpServlet {
 		}
 
 		session.setAttribute("prevQuestion", question);
-		return question;
+		return "@END";
 	}
 
 	protected void postDemo(String id, HttpServletRequest req) {
