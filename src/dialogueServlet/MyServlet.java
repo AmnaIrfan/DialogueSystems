@@ -127,7 +127,7 @@ public class MyServlet extends HttpServlet {
 		}
 
 		session.setAttribute("prevQuestion", question);
-		return "@END";
+		return question;
 	}
 
 	protected void postDemo(String id, HttpServletRequest req) {
