@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="css/flyer.css">
+	</head>
+	
+	
+
+	<body>
+		<div class="wrapper">
+			<div id="image">
+				<img src="images/taichi.jpg" width="500" height="580">
+			</div>
+			<div id="userID">
+				<h2><b>For more information on Tai Chi, please visit us at:</b></h2>
+				<h1><b>http://cs.neiu.edu/~research/taichi/index.php?id=<span id="token"></span></b></h1>
+			</div>
+		</div>
+		<script>
+
+		var params = location.href.split('?')[1].split('&');
+		data = {};
+		for (x in params)
+		{
+			data[params[x].split('=')[0]] = params[x].split('=')[1];
+		}
+		document.getElementById("token").innerHTML = data["id"]
+	</script>
+	</body>
+</html>

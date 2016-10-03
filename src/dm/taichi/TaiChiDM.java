@@ -1,5 +1,6 @@
 package dm.taichi;
 
+import dialogueServlet.Environment;
 import dm.dialogue.manager.DM;
 import sys.dm.Agent;
 import sys.dm.taichi.TaiChiAgentLoader;
@@ -13,11 +14,11 @@ public class TaiChiDM extends Agent{
 	@Override
 	public void initSystem() {
 		// Create new loader
-		String basePath="/Users/amnairfan/DialogueSystem/code/DialogueAgent/data/";
+		
 		TaiChiAgentLoader loader = new TaiChiAgentLoader("");
-		loader.MDP_FILENAME=basePath+"taichi-agent/sequence_data_mdp.txt";
-		loader.EMOTION_TRAINING_FILENAME=basePath+"testDocs/";
-		loader.QUESTIONS_DB_FILENAME=basePath+"taichi-agent/questions.db";
+		loader.MDP_FILENAME= Environment.TAICHI_AGENT+"taichi-agent/sequence_data_mdp.txt";
+		loader.EMOTION_TRAINING_FILENAME = Environment.TAICHI_AGENT+"testDocs/";
+		loader.QUESTIONS_DB_FILENAME=Environment.TAICHI_AGENT +"taichi-agent/questions.db";
 		
 		// Create new DM
 		dialogue = new DM(loader);

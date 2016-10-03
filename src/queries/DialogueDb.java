@@ -1,13 +1,14 @@
 package queries;
 import java.sql.*;
-
+import dialogueServlet.Environment;
 public class DialogueDb {
 	private String dbName;
 	
 	public DialogueDb(String dbName) {
 		this.dbName = dbName;
 	}
-	public boolean executeQuery(String query) {
+	public int executeQuery(String query) {
+		int id = -1;
 		try {
 			Class.forName("org.sqlite.JDBC");
 		} catch (ClassNotFoundException e1) {
@@ -17,13 +18,22 @@ public class DialogueDb {
 	      Connection connection = null;
 	      try
 	      {
-	    	  
 	         // create a database connection
-	         connection = DriverManager.getConnection("jdbc:sqlite:/Users/amnairfan/Documents/eclipse_workspace/DialogueSystems/"+ dbName +".db");
-
+	         connection = DriverManager.getConnection(Environment.TAICHI_DB);
+	       
 	         Statement statement = connection.createStatement();
 	         statement.setQueryTimeout(30); 
-	         statement.execute(query);
+	         if (query.toLowerCase().indexOf("select") > -1) {
+	        
+	        	 ResultSet rs = statement.executeQuery(query);
+	        	  while ( rs.next() ) {
+	        	         id = rs.getInt("id");
+	        	      }
+	        	  rs.close();
+	         } else {
+	        	 statement.execute(query); 
+	         }
+	         
 	      }
 	     catch(SQLException e){  System.err.println(e.getMessage()); }       
 	      finally {         
@@ -33,10 +43,10 @@ public class DialogueDb {
 	                  }
 	            catch(SQLException e) {     
 	               System.out.println(e); 
-	               return false;
+	               return 0;
 	             }
 	      }
-	   return true;
+	   return id;
 	}
 	
 	 public static void main(String[] args)

@@ -1,5 +1,7 @@
 $(document).ready(function(){
 	var printYesNo = 0;
+	var id = -1;
+	var userType = ""
 	/* 
 	  *----------------------------------------------------------------------------------------------------------------------------
 	  *The login screen is the initial visible interface.  The rest of the screens are hidden.
@@ -16,7 +18,8 @@ $(document).ready(function(){
 		modal: true,
 		buttons: {
 		Login: function() {
-			if($("#userPassword").val().toLowerCase() == "test")  {
+			userType = $("#userPassword").val().toLowerCase() 
+			if(userType== "test" || userType == "student")  {
 					userPass = $("#userPassword").val().toLowerCase();
 					$( this ).dialog( "close" ); 
 					$("#welcome").show();
@@ -60,15 +63,20 @@ $(document).ready(function(){
 				ex2: $("#Exercise2").val(),
 				soc:  $("#SocialNetwork").val(),		
 				pre1: $('input:radio[name=taichi1]:checked').val(),
-				pre2: $('input:radio[name=taichi2]:checked').val()
+				pre2: $('input:radio[name=taichi2]:checked').val(),
+				userType: userType
 				},
 			success: function(reply){
-				if (reply=="@END") {
+				var question = reply.split("|")[0]
+				id = reply.split("|")[1]
+				console.log(question)
+				console.log(id)
+				if (question=="@END") {
 					postchat();
 				}
 					
 				else
-					addToChat(time, "Health Guru", reply);
+					addToChat(time, "Health Guru", question);
 			}});		
 							
 	}; 
@@ -169,7 +177,7 @@ $(document).ready(function(){
 				$.ajax({
 					url: "MyServlet", 
 					type:"POST",
-					data:{reqtype:"chat",msg:msg},
+					data:{reqtype:"chat",msg:msg, userType: userType},
 					success: function(reply){
 						if (reply=="@END")
 							postchat();
@@ -239,8 +247,8 @@ $(document).ready(function(){
 	*/
 	
 	$("#printing").click(function(){
-		printYesNo = 1;			
-		$('body').append('<iframe src="fleaFlyer.pdf" id="printIFrame" name="printIFrame"></iframe>');
+		printYesNo = 1;	
+		$('body').append('<iframe src="flyer.html?id='+id+'" id="printIFrame" name="printIFrame"></iframe>');
 		$('#printIFrame').bind('load', 
 			function() { 
 				window.frames['printIFrame'].focus(); 
@@ -294,10 +302,11 @@ $(document).ready(function(){
 					excerNeed: $('input:radio[name=Q3]:checked').val(),
 					taichiInterest: $('input:radio[name=Q4]:checked').val(),
 					taichiPers: $('input:radio[name=Q5]:checked').val(),
-					printed: printYesNo 
+					printed: printYesNo,
+					userType: userType
 					},
 				success: function(done){
-					alert(done);
+					//alert(done);
 				}});	
 		}});	
 
@@ -317,14 +326,16 @@ $(document).ready(function(){
 				data:{
 					reqtype:"comments",
 					comment: comments,
+					userType: userType
 					},
 				success: function(done){
-					alert(done);
+					//alert(done);
 				}});
 		}
 		
 		$("#commentsFormatUser").hide();
-		alert("Thank you and goodbye!");
+		window.location = 'thankyou.html';
+		//alert("Thank you and goodbye!");
 	});
 	
 	

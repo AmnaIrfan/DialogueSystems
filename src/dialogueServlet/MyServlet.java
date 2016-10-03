@@ -26,14 +26,12 @@ import queries.DialogueDb;
 @WebServlet("/MyServlet")
 public class MyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private int temp;
-
+	private final String ALLOWED_USER = "student";
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public MyServlet() {
 		super();
-		temp = 0;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -74,6 +72,8 @@ public class MyServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 		
 		String userText = req.getParameter("msg");
+		int insertId = -1; 
+		String id_last_four = id.toString().substring(id.toString().length() - 2, id.toString().length());
 		
 		TaiChiDM taichi = (TaiChiDM) session.getAttribute("taichi");
 		if (taichi == null) {
@@ -86,8 +86,11 @@ public class MyServlet extends HttpServlet {
 			Scanner kbd = new Scanner(System.in);
 			String emotion;
 			String guru = session.getAttribute("prevQuestion").toString();
+			
+			
 			do {
-				System.out.println("########################################\nGURU: " + guru + "\nUSER: " + userText + "\n########################################\nEnter emotion:");
+				System.out.println("########################################\nGURU __: " + this.format(guru) + "\nUSER " + id_last_four +
+						": " + this.format(userText) + "\n########################################\nEnter emotion:");
 				emotion = kbd.nextLine();
 			} while(!Arrays.asList(emoptions).contains(emotion.toUpperCase()));
 			userText = userText + "@" + emotion.toUpperCase();
@@ -99,15 +102,18 @@ public class MyServlet extends HttpServlet {
 		String question = "";
 		String emotion = "";
 		String time = new Date().toString();
-
+		String userType = req.getParameter("userType");
+		
 		String query = "INSERT INTO Dialogue values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
 		DialogueDb db = new DialogueDb("dialogueSystem");
 		// first time text is null
 		if (userText == "") {
 			question = dialogue.takeTurn(null);
 			questionId = "INTRO";
-			this.postDemo(id, req);
-			db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question));
+			insertId = this.postDemo(id, req);
+			if (userType.equals(ALLOWED_USER)) {
+				db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question));
+			}
 		}
 		// second time
 		else if (!dialogue.isOver()) {
@@ -119,18 +125,23 @@ public class MyServlet extends HttpServlet {
 			emotion = userText.split("@")[1];
 			userText = userText.split("@")[0];
 			if (response.getProperty("next_question").equals("CONCLPRINT")) {
+				System.out.println("******** CHAT SESSION ENDED WITH USER " + id_last_four + " ********");
 				question = "@END";
 			}
 			//clean question and answer before saving to database
-			db.executeQuery(String.format(query, id, time, "U", questionId, emotion, userText));
-			db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question.replaceAll("'","’").replaceAll("[^A-Za-z0-9 .?!,’]","")));
+			if (userType.equals(ALLOWED_USER)) {
+				db.executeQuery(String.format(query, id, time, "U", questionId, emotion, userText));
+				db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question.replaceAll("'","’").replaceAll("[^A-Za-z0-9 .?!,’]","")));
+			}
 		}
-
+		
 		session.setAttribute("prevQuestion", question);
-		return question;
+		
+		//if first time chat, add demographics insert id to response
+		return (userText == "" ? question + "|" + insertId :question);
 	}
 
-	protected void postDemo(String id, HttpServletRequest req) {
+	protected int postDemo(String id, HttpServletRequest req) {
 		DialogueDb db = new DialogueDb("dialogueSystem");
 		String pos = req.getParameter("pos");
 		String sex = req.getParameter("sex");
@@ -141,9 +152,26 @@ public class MyServlet extends HttpServlet {
 		String soc = req.getParameter("soc");
 		String pre1 = req.getParameter("pre1");
 		String pre2 = req.getParameter("pre2");
+		String userType = req.getParameter("userType");
 		
-		String query = "INSERT INTO Demographics values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
-		db.executeQuery(String.format(query, id, pos, sex, race, age, ex1, ex2, soc, pre1, pre2));
+	
+		String query = "INSERT INTO Demographics (sessionID, position,"
+				+ " gender,ethnicity,age_range,excerise_freq, excerise_time,"
+				+ "social_networks, excercise_need,taichi_interest"
+				+ ") values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
+		
+		if (userType.equals(ALLOWED_USER)) {
+			db.executeQuery(String.format(query, id, pos, sex, race, age, ex1, ex2, soc, pre1, pre2));
+		}
+		
+		 query = "SELECT ID from Demographics Where sessionID = \'%s\'";
+		 
+		 if (userType.equals(ALLOWED_USER)) {
+			 return db.executeQuery(String.format(query, id));
+		 }
+		 
+		 return -1;
+		
 
 	}
 	
@@ -156,9 +184,13 @@ public class MyServlet extends HttpServlet {
 		String taichiInterest= req.getParameter("taichiInterest");
 		String taichiPers= req.getParameter("taichiPers");
 		String printed =  req.getParameter("printed");
+		String userType = req.getParameter("userType");
 		
 		String query = "INSERT INTO PostQuestions values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
-		db.executeQuery(String.format(query, id, guruUnder, userUnder, excerNeed, taichiInterest, taichiPers, printed, ""));
+		
+		if(userType.equals(ALLOWED_USER)) {
+			db.executeQuery(String.format(query, id, guruUnder, userUnder, excerNeed, taichiInterest, taichiPers, printed, ""));
+		}
 		return "completed";
 
 	}
@@ -167,15 +199,35 @@ public class MyServlet extends HttpServlet {
 		DialogueDb db = new DialogueDb("dialogueSystem");
 		String comment =  req.getParameter("comment");
 		
+		String userType = req.getParameter("userType");
+		
 		String query = "UPDATE PostQuestions SET comment = \'%s\' WHERE id = \'%s\' ";
-		db.executeQuery(String.format(query, comment, id));
+		if (userType.equals(ALLOWED_USER)) {
+			db.executeQuery(String.format(query, comment, id));
+		}
 		
 		return "completed";
 
 	}
 
 	
-
+	
+	private String format(String text) {
+		String formatted_text = "";
+		int count = 0;
+		for (int i = 0; i<text.length(); i++) {
+			count ++;
+			if (count >= 40 && text.charAt(i) == ' ') {
+				count = 0;
+				formatted_text += "\n         ";
+				
+			} else {
+				formatted_text += text.charAt(i);
+			}		
+			
+		}
+		return formatted_text;
+	}
 
 	
 
