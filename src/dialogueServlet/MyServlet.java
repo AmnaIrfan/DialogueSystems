@@ -201,7 +201,7 @@ public class MyServlet extends HttpServlet {
 		
 		String userType = req.getParameter("userType");
 		
-		String query = "UPDATE PostQuestions SET comment = \'%s\' WHERE id = \'%s\' ";
+		String query = "UPDATE PostQuestions SET comment = \'%s\' WHERE sessionID = \'%s\' ";
 		if (userType.equals(ALLOWED_USER)) {
 			db.executeQuery(String.format(query, comment, id));
 		}
