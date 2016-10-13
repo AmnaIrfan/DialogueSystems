@@ -26,7 +26,7 @@ import queries.DialogueDb;
 @WebServlet("/MyServlet")
 public class MyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private final String ALLOWED_USER = "student";
+	private final String RESTRICTED_USER = "skip";
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -81,7 +81,7 @@ public class MyServlet extends HttpServlet {
 			taichi = new TaiChiDM();
 			session.setAttribute("taichi", taichi);
 		} else {
-			userText = userText.replaceAll("'","’").replaceAll("[^A-Za-z0-9 .?!,’]","");
+			userText = userText.replaceAll("'","���").replaceAll("[^A-Za-z0-9 .?!,���]","");
 			String [] emoptions = {"NI","I", "SI"};
 			Scanner kbd = new Scanner(System.in);
 			String emotion;
@@ -111,7 +111,7 @@ public class MyServlet extends HttpServlet {
 			question = dialogue.takeTurn(null);
 			questionId = "INTRO";
 			insertId = this.postDemo(id, req);
-			if (userType.equals(ALLOWED_USER)) {
+			if (!userType.equals(RESTRICTED_USER)) {
 				db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question));
 			}
 		}
@@ -129,15 +129,16 @@ public class MyServlet extends HttpServlet {
 				question = "@END";
 			}
 			//clean question and answer before saving to database
-			if (userType.equals(ALLOWED_USER)) {
+			if (!userType.equals(RESTRICTED_USER)) {
 				db.executeQuery(String.format(query, id, time, "U", questionId, emotion, userText));
-				db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question.replaceAll("'","’").replaceAll("[^A-Za-z0-9 .?!,’]","")));
+				db.executeQuery(String.format(query, id, time, "HG", questionId, emotion, question.replaceAll("'","���").replaceAll("[^A-Za-z0-9 .?!,���]","")));
 			}
 		}
 		
 		session.setAttribute("prevQuestion", question);
 		
 		//if first time chat, add demographics insert id to response
+		//question = "@END";
 		return (userText == "" ? question + "|" + insertId :question);
 	}
 
@@ -156,17 +157,17 @@ public class MyServlet extends HttpServlet {
 		
 	
 		String query = "INSERT INTO Demographics (sessionID, position,"
-				+ " gender,ethnicity,age_range,excerise_freq, excerise_time,"
+				+ " gender, userType, ethnicity,age_range,excerise_freq, excerise_time,"
 				+ "social_networks, excercise_need,taichi_interest"
-				+ ") values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
+				+ ") values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
 		
-		if (userType.equals(ALLOWED_USER)) {
-			db.executeQuery(String.format(query, id, pos, sex, race, age, ex1, ex2, soc, pre1, pre2));
+		if (!userType.equals(RESTRICTED_USER)) {
+			db.executeQuery(String.format(query, id, pos, sex, userType, race, age, ex1, ex2, soc, pre1, pre2));
 		}
 		
 		 query = "SELECT ID from Demographics Where sessionID = \'%s\'";
 		 
-		 if (userType.equals(ALLOWED_USER)) {
+		 if (!userType.equals(RESTRICTED_USER)) {
 			 return db.executeQuery(String.format(query, id));
 		 }
 		 
@@ -188,7 +189,7 @@ public class MyServlet extends HttpServlet {
 		
 		String query = "INSERT INTO PostQuestions values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
 		
-		if(userType.equals(ALLOWED_USER)) {
+		if(!userType.equals(RESTRICTED_USER)) {
 			db.executeQuery(String.format(query, id, guruUnder, userUnder, excerNeed, taichiInterest, taichiPers, printed, ""));
 		}
 		return "completed";
@@ -201,8 +202,8 @@ public class MyServlet extends HttpServlet {
 		
 		String userType = req.getParameter("userType");
 		
-		String query = "UPDATE PostQuestions SET comment = \'%s\' WHERE id = \'%s\' ";
-		if (userType.equals(ALLOWED_USER)) {
+		String query = "UPDATE PostQuestions SET comment = \'%s\' WHERE sessionID = \'%s\' ";
+		if (!userType.equals(RESTRICTED_USER)) {
 			db.executeQuery(String.format(query, comment, id));
 		}
 		
