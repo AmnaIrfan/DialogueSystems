@@ -329,13 +329,11 @@ $(document).ready(function(){
 					userType: userType
 					},
 				success: function(done){
-					//alert(done);
+					window.location = 'thankyou.html';
 				}});
 		}
 		
 		$("#commentsFormatUser").hide();
-		window.location = 'thankyou.html';
-		//alert("Thank you and goodbye!");
 	});
 	
 	

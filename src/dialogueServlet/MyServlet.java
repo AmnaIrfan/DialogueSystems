@@ -55,6 +55,7 @@ public class MyServlet extends HttpServlet {
 		String id = session.getId();
 		String resp = null;
 		String reqType = request.getParameter("reqtype");
+		System.out.println(reqType);
 		if (reqType.equals("postques")) {
 			resp = postSurvey(id, request);
 		} else if(reqType.equals("comments")){
@@ -137,6 +138,7 @@ public class MyServlet extends HttpServlet {
 		
 		session.setAttribute("prevQuestion", question);
 		
+		question = "@END";
 		//if first time chat, add demographics insert id to response
 		return (userText == "" ? question + "|" + insertId :question);
 	}
@@ -205,7 +207,6 @@ public class MyServlet extends HttpServlet {
 		if (userType.equals(ALLOWED_USER)) {
 			db.executeQuery(String.format(query, comment, id));
 		}
-		
 		return "completed";
 
 	}
