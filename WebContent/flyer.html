@@ -8,13 +8,15 @@
 	
 
 	<body>
+	<sup style="float:right;"id="ip"></sup>
 		<div class="wrapper">
 			<div id="image">
 				<img src="images/taichi.jpg" width="500" height="580">
 			</div>
 			<div id="userID">
 				<h2><b>For more information on Tai Chi, please visit us at:</b></h2>
-				<h1><b>http://cs.neiu.edu/~research/taichi/index.php?id=<span id="token"></span></b></h1>
+				<h1><b>http://cs.neiu.edu/~taichi/index.php?id=<span id="token"></span></b></h1>
+				
 			</div>
 		</div>
 		<script>
@@ -26,6 +28,7 @@
 			data[params[x].split('=')[0]] = params[x].split('=')[1];
 		}
 		document.getElementById("token").innerHTML = data["id"]
+		document.getElementById("ip").innerHTML = data["ip"]
 	</script>
 	</body>
 </html>

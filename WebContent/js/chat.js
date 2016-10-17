@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	var printYesNo = 0;
 	var id = -1;
+	var ip = "";
 	var userType = ""
 	/* 
 	  *----------------------------------------------------------------------------------------------------------------------------
@@ -69,6 +70,7 @@ $(document).ready(function(){
 			success: function(reply){
 				var question = reply.split("|")[0]
 				id = reply.split("|")[1]
+				ip = reply.split("|")[2]
 				console.log(question)
 				console.log(id)
 				if (question=="@END") {
@@ -248,7 +250,7 @@ $(document).ready(function(){
 	
 	$("#printing").click(function(){
 		printYesNo = 1;	
-		$('body').append('<iframe src="flyer.html?id='+id+'" id="printIFrame" name="printIFrame"></iframe>');
+		$('body').append('<iframe src="flyer.html?id='+id+'&ip='+ip+'" id="printIFrame" name="printIFrame"></iframe>');
 		$('#printIFrame').bind('load', 
 			function() { 
 				window.frames['printIFrame'].focus(); 
