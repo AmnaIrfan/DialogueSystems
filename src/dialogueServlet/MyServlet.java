@@ -22,6 +22,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -80,16 +81,26 @@ public class MyServlet extends HttpServlet {
 		
 	}
 	
+	protected String getIP(HttpServletRequest req) {
+		String ip = req.getRemoteAddr();
+		if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+		    InetAddress inetAddress = null;
+			try {
+				inetAddress = InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    String ipAddress = inetAddress.getHostAddress();
+		    ip = ipAddress;
+		}
+		return ip;
+	}
 	protected String startConversation(String id, HttpServletRequest req) throws UnknownHostException {
 		
 		HttpSession session = req.getSession();
 		String userType = req.getParameter("userType");
-		String ip = req.getRemoteAddr();
-		if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-		    InetAddress inetAddress = InetAddress.getLocalHost();
-		    String ipAddress = inetAddress.getHostAddress();
-		    ip = ipAddress;
-		}
+		
 		
 		TaiChiDM taichi = new TaiChiDM();
 		session.setAttribute("taichi", taichi);
@@ -98,6 +109,7 @@ public class MyServlet extends HttpServlet {
 		String hg = dialogue.takeTurn(null);
 		String questionId = "INTRO";
 		
+		String ip = this.getIP(req);
 		addChatTab(req);
 		addChatMessage(req, "IP: " + ip, EMO_COLOR);
 		addChatMessage(req, "HEALTH GURU: " + hg, HG_COLOR);
@@ -321,7 +333,13 @@ public class MyServlet extends HttpServlet {
         });
         
         sendBtn.setBounds(1175, 555, 60, 30);
+        
         tab.add(sendBtn);
+        
+        JLabel ip = new JLabel("IP: " +this.getIP(req));
+        ip.setForeground(Color.white);
+        ip.setBounds(15, 620, 300, 30);
+        tab.add(ip);
         
         
         jtp.addTab("User " + id, tab);
