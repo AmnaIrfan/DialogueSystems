@@ -173,9 +173,11 @@ $(document).ready(function(){
 				var msg = $("#chat-input").val();
 				var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
 		
-				$("#chat-input").val('')
+				$("#chat-input").val('');
 		
-				addToChat(time,"You", msg)
+				addToChat(time,"You", msg);
+
+				
 				$.ajax({
 					url: "MyServlet", 
 					type:"POST",

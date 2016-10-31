@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -46,7 +47,7 @@ public class MyServlet extends HttpServlet {
 	private final String RESTRICTED_USER = "skip";
 	private final String USER_COLOR = "#CD1B4E";
 	private final String HG_COLOR = "#6919A8";
-	private final String EMO_COLOR = "#00000";
+	private final String EMO_COLOR = "#08592e";
 	
 	
 	public MyServlet() {
@@ -70,15 +71,14 @@ public class MyServlet extends HttpServlet {
 			if (request.getParameter("msg") == "") {
 				msg = startConversation(id, request);
 			} else {
-				msg = continueConversation(id, request, response);
+				msg = continueConversation(id, request, response);	
 			}
 		}
 		
 		PrintWriter res = response.getWriter();
 		res.write(msg);
 		res.flush();
-		res.close();
-		
+		res.close();	
 	}
 	
 	protected String getIP(HttpServletRequest req) {
@@ -101,7 +101,6 @@ public class MyServlet extends HttpServlet {
 		HttpSession session = req.getSession();
 		String userType = req.getParameter("userType");
 		
-		
 		TaiChiDM taichi = new TaiChiDM();
 		session.setAttribute("taichi", taichi);
 		
@@ -111,9 +110,10 @@ public class MyServlet extends HttpServlet {
 		
 		String ip = this.getIP(req);
 		addChatTab(req);
-		addChatMessage(req, "IP: " + ip, EMO_COLOR);
+		addChatMessage(req, "IP: " + ip, "#000");
 		addChatMessage(req, "HEALTH GURU: " + hg, HG_COLOR);
-
+		
+		
 		int insertId = -1;
 		if (!userType.equals(RESTRICTED_USER)) {
 			DialogueDb db = new DialogueDb("dialogueSystem");
@@ -121,11 +121,9 @@ public class MyServlet extends HttpServlet {
 			String time = new Date().toString();
 			insertId = this.postDemo(id, req);
 			db.executeQuery(String.format(query, id, time, "HG", questionId, "", hg));
-		}
+		}	
 		
-		
-		return (hg + "|" + insertId + "|" + ip);
-		
+		return (hg + "|" + insertId + "|" + ip);	
 	}
 
 	protected String continueConversation(String id, HttpServletRequest req, HttpServletResponse res) {
@@ -135,12 +133,15 @@ public class MyServlet extends HttpServlet {
 		DialogueDb db = new DialogueDb("dialogueSystem");
 		String query = "INSERT INTO Dialogue values(\'%s\', \'%s\', \'%s\', \'%s\', \'%s\', \'%s\')";
 		
+		//gets tab index and changes tab font color to red
+		int tabindex = jtp.getSelectedIndex(); 
+		jtp.setForegroundAt(tabindex, Color.decode("#FF0000"));
+		
 		//show user's msg to wizard
 		String userText = req.getParameter("msg");
 		addChatMessage(req,"USER: " + userText, USER_COLOR);
 		
-		
-		
+        
 		//Block the thread so the next lines execute only when wizard notifies us with an emotion
 		TaiChiDM taichi = (TaiChiDM) session.getAttribute("taichi");
 		
@@ -150,7 +151,6 @@ public class MyServlet extends HttpServlet {
 		    } catch (InterruptedException e) {
 		    }
 		}
-		
 		
 		//Get emotion and then hg's question
 		JTextArea sendArea = (JTextArea) session.getAttribute("sendArea");
@@ -166,19 +166,17 @@ public class MyServlet extends HttpServlet {
 		if (response.getProperty("next_question").equals("CONCLPRINT")) {
 			hg = "@END";
 		}
-    	//show wizard the question and save users ans and question to database
+    	//show wizard the question and save users answer and question to database	
 		
 		addChatMessage(req,"EMOTION: " + emotion, EMO_COLOR);
 		addChatMessage(req,"HEALTH GURU: " + hg, HG_COLOR);
     	
     	if (!userType.equals(RESTRICTED_USER)) {
-			db.executeQuery(String.format(query, id, new Date().toString(), "U", questionId, emotion, userText.split("@")[0].replace("'", "‘")));
-			db.executeQuery(String.format(query, id, new Date().toString(), "HG", questionId, emotion, hg.replace("'", "‘")));
+			db.executeQuery(String.format(query, id, new Date().toString(), "U", questionId, emotion, userText.split("@")[0].replace("'", "'")));
+			db.executeQuery(String.format(query, id, new Date().toString(), "HG", questionId, emotion, hg.replace("'", "'")));
 		}
-		
- 
-		return hg;
-		
+    	
+		return hg;	
 	}
 	
 	protected int postDemo(String id, HttpServletRequest req) {
@@ -194,7 +192,6 @@ public class MyServlet extends HttpServlet {
 		String pre2 = req.getParameter("pre2");
 		String userType = req.getParameter("userType");
 		
-	
 		String query = "INSERT INTO Demographics (sessionID, position,"
 				+ " gender, userType, ethnicity,age_range,excerise_freq, excerise_time,"
 				+ "social_networks, excercise_need,taichi_interest"
@@ -211,8 +208,6 @@ public class MyServlet extends HttpServlet {
 		 }
 		 
 		 return -1;
-		
-
 	}
 	  
 	protected String postSurvey(String id, HttpServletRequest req) {
@@ -231,7 +226,6 @@ public class MyServlet extends HttpServlet {
 			db.executeQuery(String.format(query, id, guruUnder, userUnder, excerNeed, taichiInterest, taichiPers, printed, ""));
 		}
 		return "completed";
-
 	}
 	
 	protected String postComment(String id, HttpServletRequest req) {
@@ -246,7 +240,6 @@ public class MyServlet extends HttpServlet {
 			db.executeQuery(String.format(query, comment, id));
 		}
 		return "completed";
-
 	}
 
 	private String wrapText(String text) {
@@ -260,15 +253,13 @@ public class MyServlet extends HttpServlet {
 				
 			} else {
 				formatted_text += text.charAt(i);
-			}		
-			
+			}			
 		}
 		return formatted_text;
 	}
 
 	
 	//chat GUI
-
 	private void createChatWindow() {
 		tp = new JFrame();
 		tp.setSize(new Dimension(1280, 800));
@@ -285,7 +276,7 @@ public class MyServlet extends HttpServlet {
 		
 		HttpSession session = req.getSession();
 		String id = session.getId().substring(session.getId().length() - 2, session.getId().length());;
-		
+               
 		//tab and chat area
 		JPanel tab = new JPanel();
 		tab.setLayout(null);
@@ -296,8 +287,8 @@ public class MyServlet extends HttpServlet {
         chatArea.setEditable(false);
         chatArea.setBorder(BorderFactory.createCompoundBorder(chatArea.getBorder(),BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        tab.add(scrollPane);
-      
+        tab.add(scrollPane); 
+        
         //send area
         JTextArea sendArea = new JTextArea();
         
@@ -307,20 +298,30 @@ public class MyServlet extends HttpServlet {
         sendArea.setBorder(BorderFactory.createCompoundBorder(sendArea.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         tab.add(sendArea);
         
+        
+        jtp.addTab("User " + id, tab);
+        session.setAttribute("sendArea", sendArea);
+        session.setAttribute("chatArea", chatArea);
+        tp.validate();
+        
+        //gets tab index
+        int tabindex = jtp.getSelectedIndex(); 
+        
+        
+        
         //send button
         JButton sendBtn = new JButton("Send");
         sendBtn.addActionListener(new ActionListener()
         {
           public void actionPerformed(ActionEvent e)
           {
+        	  jtp.setForegroundAt(tabindex, Color.decode("#000000")); //sets the tab font color to red
         	  TaiChiDM taichi = (TaiChiDM) session.getAttribute("taichi");
         	  synchronized(taichi) {
         		    taichi.notify();
-        		}
-    		
+        	  }	
           }
         });
-
 
         sendArea.addKeyListener(new KeyAdapter() {
            public void keyTyped(KeyEvent e) {
@@ -329,6 +330,16 @@ public class MyServlet extends HttpServlet {
               if (allowed.indexOf(c) < 0){
                  e.consume();  // ignore event
               }
+           }
+           
+           //sends emotion when enter key is pressed
+           public void keyPressed(KeyEvent e){
+        	   if(e.getKeyCode()==KeyEvent.VK_ENTER){
+        		  jtp.setForegroundAt(tabindex, Color.decode("#000000")); //sets the tab font color to red
+             	  TaiChiDM taichi = (TaiChiDM) session.getAttribute("taichi");
+            	  synchronized(taichi) {
+            		    taichi.notify();}
+        	   }
            }
         });
         
@@ -339,13 +350,9 @@ public class MyServlet extends HttpServlet {
         JLabel ip = new JLabel("IP: " +this.getIP(req));
         ip.setForeground(Color.white);
         ip.setBounds(15, 620, 300, 30);
-        tab.add(ip);
+        tab.add(ip); 
+
         
-        
-        jtp.addTab("User " + id, tab);
-        session.setAttribute("sendArea", sendArea);
-        session.setAttribute("chatArea", chatArea);
-        tp.validate();
 	}
 	
 	private void addChatMessage(HttpServletRequest req, String msg, String color) {
@@ -359,9 +366,13 @@ public class MyServlet extends HttpServlet {
         Style style = chatArea.addStyle("style", null);
         
         StyleConstants.setForeground(style, Color.decode(color));
-        try { doc.insertString(doc.getLength(), wrapText(msg) + "\n",style); }
+        try { 
+        	doc.insertString(doc.getLength(), wrapText(msg) + "\n", style); 
+        }
         catch (BadLocationException e){}
         tp.setVisible(true);
-
+        
+        //auto scrolls to the end of the chatArea
+        chatArea.select(doc.getLength(),doc.getLength());
 	}
 }
