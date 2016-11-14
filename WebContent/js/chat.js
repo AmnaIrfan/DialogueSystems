@@ -1,4 +1,24 @@
 $(document).ready(function(){
+	var webSocket = new WebSocket("ws://localhost:8080/DialogueSystem/chat")
+	
+	webSocket.onmessage = function(event) {
+		var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
+		if (event.data == "@END") {
+			postchat();
+		} else {
+			var parts = event.data.split("|")
+			if (parts.length == 1) {
+				addToChat(time, "Health Guru", event.data);
+			} else {
+				id = parts[1]
+				addToChat(time, "Health Guru", parts[0]);
+			}
+		}
+		
+		
+	}
+	
+	
 	var printYesNo = 0;
 	var id = -1;
 	var ip = "";
@@ -48,38 +68,28 @@ $(document).ready(function(){
 	});		
 
 	var first_msg = function() {
-		var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
-		console.log("fits");
-		$.ajax({
-			url: "MyServlet", 
-			type:"POST",
-			data:{
-				msg:null,
-				reqtype:"demo",
-				pos: $("#Position").val(),
-				sex: $("#Gender").val(),
-				race: $("#Ethnicity").val(),
-				age: $("#Age").val(),
-				ex1: $("#Exercise1").val(),
-				ex2: $("#Exercise2").val(),
-				soc:  $("#SocialNetwork").val(),		
-				pre1: $('input:radio[name=taichi1]:checked').val(),
-				pre2: $('input:radio[name=taichi2]:checked').val(),
-				userType: userType
-				},
-			success: function(reply){
-				var question = reply.split("|")[0]
-				id = reply.split("|")[1]
-				ip = reply.split("|")[2]
-				console.log(question)
-				console.log(id)
-				if (question=="@END") {
-					postchat();
-				}
-					
-				else
-					addToChat(time, "Health Guru", question);
-			}});		
+		$(document).ready(function () {
+		    $.getJSON("http://jsonip.com/?callback=?", function (data) {
+				console.log("fits");
+				ip = data.ip
+				webSocket.send(JSON.stringify(
+				{
+					msg:"@START",
+					reqtype:"demo",
+					pos: $("#Position").val(),
+					sex: $("#Gender").val(),
+					race: $("#Ethnicity").val(),
+					age: $("#Age").val(),
+					ex1: $("#Exercise1").val(),
+					ex2: $("#Exercise2").val(),
+					soc:  $("#SocialNetwork").val(),		
+					pre1: $('input:radio[name=taichi1]:checked').val(),
+					pre2: $('input:radio[name=taichi2]:checked').val(),
+					usertype: userType,
+					ip: ip
+				}))
+		    });
+		});
 							
 	}; 
 	
@@ -176,16 +186,11 @@ $(document).ready(function(){
 				$("#chat-input").val('')
 		
 				addToChat(time,"You", msg)
-				$.ajax({
-					url: "MyServlet", 
-					type:"POST",
-					data:{reqtype:"chat",msg:msg, userType: userType},
-					success: function(reply){
-						if (reply=="@END")
-							postchat();
-						else
-							addToChat(time, "Health Guru", reply);
-					}});
+				var data = {
+					reqtype:"chat",
+					msg:msg, 
+				}
+				webSocket.send(JSON.stringify(data))
 			}
 			else{
 				$("#chat-input").focus();
@@ -294,22 +299,16 @@ $(document).ready(function(){
 			$("#PostQuest").hide();
 			$("#PostQuest2").hide();
 			$("#commentsFormatUser").show();
-			$.ajax({
-				url: "MyServlet", 
-				type:"POST",
-				data:{
-					reqtype:"postques",
-					guruUnder: $('input:radio[name=Q1]:checked').val(),
-					userUnder: $('input:radio[name=Q2]:checked').val(),
-					excerNeed: $('input:radio[name=Q3]:checked').val(),
-					taichiInterest: $('input:radio[name=Q4]:checked').val(),
-					taichiPers: $('input:radio[name=Q5]:checked').val(),
-					printed: printYesNo,
-					userType: userType
-					},
-				success: function(done){
-					//alert(done);
-				}});	
+			var data = {
+				reqtype:"postques",
+				guruUnder: $('input:radio[name=Q1]:checked').val(),
+				userUnder: $('input:radio[name=Q2]:checked').val(),
+				excerNeed: $('input:radio[name=Q3]:checked').val(),
+				taichiInterest: $('input:radio[name=Q4]:checked').val(),
+				taichiPers: $('input:radio[name=Q5]:checked').val(),
+				printed: printYesNo
+			}
+			webSocket.send(JSON.stringify(data))
 		}});	
 
 	/* 
@@ -322,20 +321,15 @@ $(document).ready(function(){
 		var comments = $('#addCmmtsUser').val();
 		console.log("comment"+comments)
 		if (comments != "") {
-			$.ajax({
-				url: "MyServlet", 
-				type:"POST",
-				data:{
-					reqtype:"comments",
-					comment: comments,
-					userType: userType
-					},
-				success: function(done){
-					window.location = 'thankyou.html';
-				}});
+			var data = {
+				reqtype:"comments",
+				comment: comments
+			}
+			webSocket.send(JSON.stringify(data))
 		}
 		
 		$("#commentsFormatUser").hide();
+		window.location = 'thankyou.html';
 	});
 	
 	
