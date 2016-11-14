@@ -33,22 +33,23 @@ public class ChatEndpoint {
 	
 	@OnOpen
 	public void onOpen(Session session) {
-		System.out.println("Session: " + session.getId() + " connected.");
 		String sessionId = this.generateSessionId();
 		User u = new User(session, session.getId(), sessionId);
+		System.out.println("Session: " + sessionId.substring(sessionId.length()-4, sessionId.length()) + " connected.");
 		users.add(u);
 	}
 	
 	@OnMessage
 	public void onMessage(Session req, String message) {
 		
-		System.out.println("Recieved message from " + req.getId());
-		System.out.println(message);
-		
+	
 		JSONObject data = new JSONObject(message);		
 		String reqType = data.getString("reqtype");
 		
 		User user = this.getUser(req.getId());	
+		
+		System.out.println("Recieved message from " + user.sessionId.substring(user.sessionId.length()-4));
+		System.out.println(message);
 		
 		if(reqType.equals("hg_start")) {
 			healthguru = user;
@@ -132,7 +133,7 @@ public class ChatEndpoint {
       	  } catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-				System.out.print("unable to send msg to: " + u.sessionId);
+				System.out.print("unable to send msg to: " + u.sessionId.substring(u.sessionId.length()-4));
       	  }
 	}
 	
@@ -213,7 +214,6 @@ public class ChatEndpoint {
 		}
 		return null;
 	}
-	
 	
 	public class User {
 		
