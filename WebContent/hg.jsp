@@ -101,7 +101,6 @@ webSocket.onmessage = function(event) {
 	}
 	if (data.speaker == "hg") {
 		addMsg(id, "HG", data.msg, "#6919A8");
-		notifyTab(id)
 	} else {
 		addMsg(id, "USER", data.msg, "#CD1B4E");
 		notifyTab(id)
