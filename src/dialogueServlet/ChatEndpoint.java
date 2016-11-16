@@ -69,6 +69,7 @@ public class ChatEndpoint {
 
 	public void receivedResponse(JSONObject data, User user) {
 		String msg = data.getString("msg");
+		msg = msg.replace("\n","");
 		user.setMsg(msg);
 		this.sendMessage(healthguru, "{\"msg\":\"" + msg + "\",\"speaker\":\"user\", \"id\":\"" + user.id + "\"}");
 	}
