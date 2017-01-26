@@ -1,5 +1,31 @@
 $(document).ready(function(){
-
+	var webSocket = new WebSocket("ws://localhost:8080/DialogueSystem/chat")
+	
+	webSocket.onmessage = function(event) {
+		var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
+		if (event.data == "@END") {
+			postchat();
+		} else {
+			var parts = event.data.split("|")
+			if (parts.length == 1) {
+				addToChat(time, "Health Guru", event.data);
+				$("#chat-input").val('');
+				$("#chat-input").attr('readonly',false);
+				$("#chat-submit").prop('disabled',false);
+			} else {
+				id = parts[1]
+				addToChat(time, "Health Guru", parts[0]);
+			}
+		}
+		
+		
+	}
+	
+	
+	var printYesNo = 0;
+	var id = -1;
+	var ip = "";
+	var userType = ""
 	/* 
 	  *----------------------------------------------------------------------------------------------------------------------------
 	  *The login screen is the initial visible interface.  The rest of the screens are hidden.
@@ -16,7 +42,8 @@ $(document).ready(function(){
 		modal: true,
 		buttons: {
 		Login: function() {
-			if($("#userPassword").val().toLowerCase() == "test")  {
+			userType = $("#userPassword").val().toLowerCase() 
+			if(userType== "test" || userType == "student")  {
 					userPass = $("#userPassword").val().toLowerCase();
 					$( this ).dialog( "close" ); 
 					$("#welcome").show();
@@ -44,15 +71,29 @@ $(document).ready(function(){
 	});		
 
 	var first_msg = function() {
-		var time = new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
-		var msg = "first@I";
-		$.ajax({
-			url: "MyServlet", 
-			type:"POST",
-			data:{msg:msg},
-			success: function(reply){
-				addToChat(time, "Health Guru", "Hi this is the Health Guru! How are you?");						
-		}});
+		$(document).ready(function () {
+		    $.getJSON("http://jsonip.com/?callback=?", function (data) {
+				console.log("fits");
+				ip = data.ip
+				webSocket.send(JSON.stringify(
+				{
+					msg:"@START",
+					reqtype:"demo",
+					pos: $("#Position").val(),
+					sex: $("#Gender").val(),
+					race: $("#Ethnicity").val(),
+					age: $("#Age").val(),
+					ex1: $("#Exercise1").val(),
+					ex2: $("#Exercise2").val(),
+					soc:  $("#SocialNetwork").val(),		
+					pre1: $('input:radio[name=taichi1]:checked').val(),
+					pre2: $('input:radio[name=taichi2]:checked').val(),
+					usertype: userType,
+					ip: ip
+				}))
+		    });
+		});
+							
 	}; 
 	
 	
@@ -145,19 +186,20 @@ $(document).ready(function(){
 				var msg = $("#chat-input").val();
 				var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
 		
-				$("#chat-input").val('')
-		
+				$("#chat-input").val('');
+				
 				addToChat(time,"You", msg)
-				$.ajax({
-					url: "MyServlet", 
-					type:"POST",
-					data:{msg:msg},
-					success: function(reply){
-						if (reply=="@END")
-							postchat();
-						else
-							addToChat(time, "Health Guru", reply);
-					}});
+				var data = {
+					reqtype:"chat",
+					msg:msg, 
+				}
+				
+				$("#chat-submit").prop('disabled',true);
+				$("#chat-input").val('Health Guru is typing...');
+				$("#chat-input").attr('readonly',true);
+				//$("#chat-input").style.backgroundColor = "#C0C0C0";
+				
+				webSocket.send(JSON.stringify(data))
 			}
 			else{
 				$("#chat-input").focus();
@@ -188,10 +230,9 @@ $(document).ready(function(){
 	$("#chat-input").keyup(function(event){
 		if(event.keyCode == 13) {
 			
-			if($.trim($("#chat-input").val()) != ""){
+			if($.trim($("#chat-input").val()) != "" && $("#chat-input").val() !="Health Guru is typing..."){
 				$("#chat-submit").click();}
 			else{
-				$("#chat-input").val('');
 				$("#chat-input").focus();
 			}
 		}
@@ -221,8 +262,8 @@ $(document).ready(function(){
 	*/
 	
 	$("#printing").click(function(){
-		var printYesNo = 1;			
-		$('body').append('<iframe src="fleaFlyer.pdf" id="printIFrame" name="printIFrame"></iframe>');
+		printYesNo = 1;	
+		$('body').append('<iframe src="flyer.html?id='+id+'&ip='+ip+'" id="printIFrame" name="printIFrame"></iframe>');
 		$('#printIFrame').bind('load', 
 			function() { 
 				window.frames['printIFrame'].focus(); 
@@ -234,11 +275,10 @@ $(document).ready(function(){
 		$("#ChatFormat").hide();
 		$("#PostQuest").hide();		
 		$("#PostQuest2").show();
-		$("#commentsFormatUser").hide();							
+		$("#commentsFormatUser").hide();
 	});
 		
 	$("#nothank").click(function(){
-		var printYesNo = 0;
 		$("#welcome").hide();
 		$("#QuestFormat").hide();
 		$("#ChatFormat").hide();
@@ -260,17 +300,23 @@ $(document).ready(function(){
 				$('#questbox2').scrollTop(0);
 		}
 		else {
-			var q1 = $("#posttest1").val();
-			var q2 = $("#posttest2").val();
-			var q3 = $("#posttest3").val();
-			var q4 = $("#posttest4").val();
-			var q5 = $("#posttest5").val();
+						
 			$("#welcome").hide();
 			$("#QuestFormat").hide();
 			$("#ChatFormat").hide();
 			$("#PostQuest").hide();
 			$("#PostQuest2").hide();
 			$("#commentsFormatUser").show();
+			var data = {
+				reqtype:"postques",
+				guruUnder: $('input:radio[name=Q1]:checked').val(),
+				userUnder: $('input:radio[name=Q2]:checked').val(),
+				excerNeed: $('input:radio[name=Q3]:checked').val(),
+				taichiInterest: $('input:radio[name=Q4]:checked').val(),
+				taichiPers: $('input:radio[name=Q5]:checked').val(),
+				printed: printYesNo
+			}
+			webSocket.send(JSON.stringify(data))
 		}});	
 
 	/* 
@@ -280,9 +326,18 @@ $(document).ready(function(){
 	  */
 	
 	$("#submitcmmtsUser").click(function(){
-		$("#commentsFormatUser").hide();
-		alert("Thank you and goodbye!");
+		var comments = $('#addCmmtsUser').val();
+		console.log("comment"+comments)
+		if (comments != "") {
+			var data = {
+				reqtype:"comments",
+				comment: comments
+			}
+			webSocket.send(JSON.stringify(data))
+		}
 		
+		$("#commentsFormatUser").hide();
+		window.location = 'thankyou.html';
 	});
 	
 	
