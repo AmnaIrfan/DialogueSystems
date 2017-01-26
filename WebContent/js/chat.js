@@ -9,6 +9,9 @@ $(document).ready(function(){
 			var parts = event.data.split("|")
 			if (parts.length == 1) {
 				addToChat(time, "Health Guru", event.data);
+				$("#chat-input").val('');
+				$("#chat-input").attr('readonly',false);
+				$("#chat-submit").prop('disabled',false);
 			} else {
 				id = parts[1]
 				addToChat(time, "Health Guru", parts[0]);
@@ -184,12 +187,18 @@ $(document).ready(function(){
 				var time= new Date().toLocaleTimeString().replace(/:\d+ /, ' ');
 		
 				$("#chat-input").val('');
-		
+				
 				addToChat(time,"You", msg)
 				var data = {
 					reqtype:"chat",
 					msg:msg, 
 				}
+				
+				$("#chat-submit").prop('disabled',true);
+				$("#chat-input").val('Health Guru is typing...');
+				$("#chat-input").attr('readonly',true);
+				//$("#chat-input").style.backgroundColor = "#C0C0C0";
+				
 				webSocket.send(JSON.stringify(data))
 			}
 			else{
@@ -221,10 +230,9 @@ $(document).ready(function(){
 	$("#chat-input").keyup(function(event){
 		if(event.keyCode == 13) {
 			
-			if($.trim($("#chat-input").val()) != ""){
+			if($.trim($("#chat-input").val()) != "" && $("#chat-input").val() !="Health Guru is typing..."){
 				$("#chat-submit").click();}
 			else{
-				$("#chat-input").val('');
 				$("#chat-input").focus();
 			}
 		}

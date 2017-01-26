@@ -152,9 +152,9 @@ function addTab(id, ip, sessionId) {
 		'<div id="' + name + '" class="tabcontent">' +
   		'<div class="chatArea" id="' + 'chatarea_' + id + '">' +
  		'</div>' +
-  		'<div class="sendArea" contenteditable="true" id="' + 'sendarea_' + id + '">'  +
+  		'<div class="sendArea" contenteditable="true" id="' + 'sendarea_' + id + '" onkeypress="sendMsgEnter(event,\'' + id + '\')">'  +
   		'</div>'+
-  		'<input type="button" value="SEND" onclick="sendMsg(event, \'' + id + '\')"></input>' +
+  		'<input type="button" value="SEND" onclick="sendMsg(\'' + id + '\') " ></input>' +
 		'<p style="font-size:12px;">' + ip + '</p></div>'
 }
 
@@ -162,7 +162,7 @@ function addMsg(id, speaker, msg, color) {
 	document.getElementById("chatarea_" + id).innerHTML += '<p style="color:' + color + '">' +'<b>' + speaker +  ': ' + '</b>' + msg + '</p>';
 }
 
-function sendMsg(e, id) {
+function sendMsg(id) {
 	var sendArea = document.getElementById("sendarea_" + id)
 	var emo = sendArea.innerHTML.toUpperCase();
 	var data = {
@@ -174,6 +174,14 @@ function sendMsg(e, id) {
 		addMsg(id, "EMOTION", emo, "#00000");
 		webSocket.send(JSON.stringify(data));
 		sendArea.innerHTML = "";
+	}
+	
+}
+
+function sendMsgEnter(event, id){
+	if(event.keyCode==13){
+	
+		sendMsg(id);
 	}
 	
 }
